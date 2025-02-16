@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 class WorkManagerServiceImp(
     private val context: Context,
     private val settingsRepository: SettingsRepository,
-    private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.IO)
+    scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.IO)
 ) : WorkManagerService {
     private var period:Long = DEFAULT_REFRESH_PERIOD
     private var delayed: Long = FIST_LAUNCH_DELAY
@@ -39,16 +39,15 @@ class WorkManagerServiceImp(
     }
 
     private fun createConstraints(): Constraints {
-        // Реализуйте метод, возвращающий Constraints
-        // В условиях укажите необходимость наличия интернет соединения.
+        return Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
     }
 
     private fun createRequest(repeat: Long, delayed: Long): PeriodicWorkRequest {
         val networkConstraints = createConstraints()
-        // Допишите реализацию метода и верните WorkRequest на периодическую задачу для RefreshWorker
-        // Интервал запуска задачи (в минутах)  = repeat.
-        // Отсрочка запуска задачи в (секундах) = delayed.
-        // Не забудьте в билдере указать constraints.
+        return PeriodicWorkRequestBuilder<RefreshWorker>(
+            repeatInterval = repeat,
+            repeatIntervalTimeUnit = TimeUnit.MINUTES
+        ).setConstraints(networkConstraints).setInitialDelay(delayed, TimeUnit.SECONDS).build()
     }
 
     override fun launchRefreshWork() {
@@ -64,7 +63,6 @@ class WorkManagerServiceImp(
     override fun cancelRefreshWork() {
         WorkManager.getInstance(context).cancelUniqueWork(uniqueWorkName = REFRESH_WORK_NAME)
     }
-
 
     companion object {
         const val REFRESH_WORK_NAME = "Refresh work"

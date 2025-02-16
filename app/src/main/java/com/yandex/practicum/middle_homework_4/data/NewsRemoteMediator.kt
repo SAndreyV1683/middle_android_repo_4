@@ -1,6 +1,5 @@
 package com.yandex.practicum.middle_homework_4.data
 
-import android.net.http.HttpException
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -31,6 +30,7 @@ class NewsRemoteMediator(
             InitializeAction.LAUNCH_INITIAL_REFRESH
         }
     }
+
 
     override suspend fun load(
         loadType: LoadType,
@@ -85,7 +85,7 @@ class NewsRemoteMediator(
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (error: IOException) {
             return MediatorResult.Error(error)
-        } catch (error: HttpException) {
+        } catch (error: Exception) {
             return MediatorResult.Error(error)
         }
     }
