@@ -4,6 +4,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
+import com.yandex.practicum.middle_homework_4.data.setting_repository.SettingContainer.Companion.DEFAULT_REFRESH_PERIOD
+import com.yandex.practicum.middle_homework_4.data.setting_repository.SettingContainer.Companion.FIST_LAUNCH_DELAY
 import com.yandex.practicum.middle_homework_4.ui.contract.SettingsRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -44,8 +46,8 @@ class SettingsRepositoryImpl(
     override suspend fun readSetting() {
         withContext(dispatcher){
             dataStore.data.collect { pref ->
-                val periodic = pref[REFRESH_PERIOD_KEY] ?: 15
-                val delayed = pref[FIRST_LAUNCH_DELAY_KEY] ?: 10
+                val periodic = pref[REFRESH_PERIOD_KEY] ?: DEFAULT_REFRESH_PERIOD
+                val delayed = pref[FIRST_LAUNCH_DELAY_KEY] ?: FIST_LAUNCH_DELAY
                 updateState(periodic, delayed)
             }
         }
